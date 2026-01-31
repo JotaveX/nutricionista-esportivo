@@ -1,0 +1,26 @@
+/* Efeito de Vidro (Glassmorphism) */
+.glass {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+.dark .glass {
+    background: rgba(15, 23, 42, 0.7);
+}
+
+/* Animação de Reveal (Scroll) */
+.reveal, .stagger-reveal > * {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+}
+
+.reveal.active, .stagger-reveal > *.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Stagger delays (efeito cascata) */
+.stagger-reveal > *:nth-child(1) { transition-delay: 0.1s; }
+.stagger-reveal > *:nth-child(2) { transition-delay: 0.2s; }
+.stagger-reveal > *:nth-child(3) { transition-delay: 0.3s; }
