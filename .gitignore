@@ -1,0 +1,29 @@
+# Dependências
+node_modules/
+backend/node_modules/
+
+# Variáveis de ambiente
+.env
+backend/.env
+.env.local
+.env.production
+
+# Logs
+*.log
+npm-debug.log*
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+
+# Build do TypeScript
+backend/dist/
+backend/build/
+
+# Temporários
+*.tmp
+*.temp
