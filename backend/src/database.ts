@@ -2,10 +2,10 @@ import { Pool } from 'pg';
 import dotenv from "dotenv";
 
 dotenv.config()
-console.log(process.env.DATABASE_URL)
+console.log(process.env.POSTGRES_URL)
 // Conexão com Postgres
 const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
+    connectionString: process.env.POSTGRES_URL,
     ssl: {
         rejectUnauthorized: false
     }
