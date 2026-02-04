@@ -4,9 +4,7 @@ import dotenv from "dotenv";
 // Conexão com Postgres
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
-    ssl: {
-        rejectUnauthorized: false
-    }
+    ssl: false
 });
 
 // Teste de conexão
