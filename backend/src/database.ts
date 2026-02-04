@@ -6,7 +6,9 @@ console.log(process.env.DATABASE_URL)
 // Conexão com Postgres
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
-    ssl: false
+    ssl: {
+        rejectUnauthorized: false
+    }
 });
 
 // Teste de conexão
