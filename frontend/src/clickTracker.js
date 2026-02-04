@@ -1,5 +1,5 @@
 // Configuração da API
-const API_URL = 'http://localhost:3000/api';
+const API_URL = 'https://nutricionista-esportivo.onrender.com/api';
 
 // Função para registrar clique
 async function registrarClick() {
