@@ -8,8 +8,10 @@ const router = Router();
 router.post('/click', async (req, res) => {
     try {
         // Obter IP do cliente
-        const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-        const ipString = Array.isArray(ip) ? ip[0] : ip;
+        // x-forwarded-for pode vir como "client, proxy1, proxy2" — pegar só o primeiro
+        const rawIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+        const ipHeader = Array.isArray(rawIp) ? rawIp[0] : rawIp;
+        const ipString = (ipHeader || '').split(',')[0].trim() || undefined;
 
         // Obter geolocalização
         const geoLocation = await GeoLocationService.getLocationByIp(ipString);
