@@ -1,5 +1,5 @@
 // Configuração da API
-const API_URL = 'https://nutricionista-esportivo.onrender.com/api';
+const API_URL = 'https://nutricionista-esportivo-5u2i.vercel.app/api';
 
 // Função para registrar clique
 async function registrarClick() {
