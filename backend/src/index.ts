@@ -10,11 +10,14 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 
 // Configurar CORS para aceitar múltiplas origens
+// Lista padrão (prod + dev) + qualquer adicional via env var (separada por vírgula)
 const allowedOrigins = [
-    process.env.ALLOWED_ORIGIN || 'http://localhost:5173',
-    'http://127.0.0.1:5500',
+    'https://nutricionista-esportivo.vercel.app',
+    'http://localhost:5173',
     'http://localhost:5500',
-    'http://localhost:3000'
+    'http://127.0.0.1:5500',
+    'http://localhost:3000',
+    ...(process.env.ALLOWED_ORIGIN?.split(',').map(s => s.trim()).filter(Boolean) || []),
 ];
 
 app.use(cors({
