@@ -2,7 +2,7 @@
 
 > Landing page profissional para nutricionista esportivo, com frontend em HTML/CSS e backend para formulário de contato.
 
-### 🌐 [Ver online → nutricionista-esportivo.vercel.app](https://nutricionista-esportivo.vercel.app/frontend/index.html)
+### 🌐 [Ver online → nutricionista-esportivo.vercel.app](https://nutricionista-esportivo.vercel.app)
 
 ## 🚀 Stack
 
@@ -80,4 +80,4 @@ Distribuído sob a licença MIT. Veja [LICENSE](./LICENSE) para mais informaçõ
 
 ---
 
-Feito por [João Victor Piloni](https://github.com/jotaveX)
+Feito por [João Victor Piloni](https://github.com/jotaveX) e [Lucas Vinícius de Carvalho Ikeda](https://github.com/ikeda7)
