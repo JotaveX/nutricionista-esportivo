@@ -3,6 +3,7 @@ import rateLimit from 'express-rate-limit';
 import pool from './database';
 import { GeoLocationService } from './geoLocation';
 import apiKeyMiddleware from './validApiKey';
+import { truncateIp } from './ipUtils';
 
 const router = Router();
 
@@ -49,9 +50,14 @@ router.post('/click', clickLimiter, async (req, res) => {
             RETURNING *;
         `;
 
+        // Guarda o IP truncado (não o completo): país/cidade já cobrem a
+        // finalidade de analytics, então não há necessidade de reter um
+        // identificador mais preciso (LGPD art. 6º, III - minimização).
+        const ipToStore = ipString ? truncateIp(ipString) : null;
+
         const values = [
             timestampLocal, // Salva o horário local sem conversão
-            ipString,
+            ipToStore,
             geoLocation?.country || 'Desconhecido',
             geoLocation?.city || 'Desconhecido',
             geoLocation?.latitude || null,

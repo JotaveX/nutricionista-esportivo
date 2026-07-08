@@ -30,13 +30,13 @@ There is no test suite and no linter configured.
 
 Entry point [backend/src/index.ts](backend/src/index.ts) wires Express, sets `trust proxy` to `1` (Vercel adds exactly one proxy hop, so this makes `req.ip` resolve the real client IP from `x-forwarded-for` instead of trusting a client-suppliable header verbatim), configures CORS (allow-list driven by `ALLOWED_ORIGIN` env var plus localhost variants), and mounts the click router at `/api`.
 
-[backend/src/database.ts](backend/src/database.ts) creates a singleton `pg.Pool` against `process.env.neon_DATABASE_URL` (note the lowercase `neon_` prefix — it is intentional and must match `.env`). SSL uses `rejectUnauthorized: false` because Neon's cert is not in Node's trust store on the host. On module load it runs `CREATE TABLE IF NOT EXISTS clicks (...)` — schema is owned by the app, not by migrations.
+[backend/src/database.ts](backend/src/database.ts) creates a singleton `pg.Pool` against `process.env.neon_DATABASE_URL` (note the lowercase `neon_` prefix — it is intentional and must match `.env`). SSL uses `rejectUnauthorized: false` because Neon's cert is not in Node's trust store on the host. On module load it runs `CREATE TABLE IF NOT EXISTS clicks (...)` — schema is owned by the app, not by migrations — and then a one-off `DELETE FROM clicks WHERE timestamp < NOW() - INTERVAL '180 days'` (data-retention purge, runs once per cold start; see LGPD note below).
 
 [backend/src/validApiKey.ts](backend/src/validApiKey.ts) is a middleware that checks the `x-api-key` header (timing-safe compare) against `process.env.API_KEY`. It's applied only to the two read endpoints below, **not** to `POST /api/click` — that route stays public because it's called by anonymous site visitors who can't hold a secret.
 
 [backend/src/routes.ts](backend/src/routes.ts) exposes three endpoints:
 
-- `POST /api/click` — rate-limited (20 req/min per IP via `express-rate-limit`), reads the client IP from `req.ip` (see trust proxy note above), looks up geo via [GeoLocationService](backend/src/geoLocation.ts), and inserts a row. Public, no API key required.
+- `POST /api/click` — rate-limited (20 req/min per IP via `express-rate-limit`), reads the client IP from `req.ip` (see trust proxy note above), looks up geo via [GeoLocationService](backend/src/geoLocation.ts), and inserts a row with the IP **truncated** via [ipUtils.ts](backend/src/ipUtils.ts) (last IPv4 octet / last 80 IPv6 bits zeroed — country/city already cover the analytics use case, so the untruncated IP isn't retained). Public, no API key required.
 - `GET /api/clicks` — last 100 rows, pt-BR formatted. Requires `x-api-key` (exposes visitor IPs + geolocation).
 - `GET /api/clicks/stats` — aggregates (totals, top countries/cities, 7-day breakdown). Requires `x-api-key`.
 
@@ -46,6 +46,10 @@ Entry point [backend/src/index.ts](backend/src/index.ts) wires Express, sets `tr
 
 `routes.ts` deliberately formats `new Date()` into an ISO-shaped string **without** timezone conversion and inserts it as a `TIMESTAMP` (no tz). The intent is to store BRT-as-local on a server that runs UTC. If you change this, also update the read path in `GET /api/clicks` which assumes the stored value is already in display-local time.
 
+### LGPD posture (non-obvious)
+
+The click tracker stores personal data (IP, geolocation) from anonymous site visitors, so three mitigations exist to keep this defensible under LGPD: (1) IP truncation before insert (`ipUtils.ts`, art. 6º III — minimização), (2) the 180-day purge in `database.ts` (art. 15/16 — eliminação), (3) the transparency note in the footer of [frontend/index.html](frontend/index.html) (art. 9º/6º VI). None of this is a formal legal basis analysis or a substitute for a real privacy policy — if the business grows beyond a single-nutritionist landing page, get an actual LGPD review.
+
 ## Frontend notes
 
 Plain HTML + Tailwind via CDN. JS files in `frontend/src/` are loaded as classic scripts (no bundler):
@@ -53,6 +57,7 @@ Plain HTML + Tailwind via CDN. JS files in `frontend/src/` are loaded as classic
 - `tailwindInit.js` — Tailwind config (custom colors, fonts).
 - `clickTracker.js` — WhatsApp click → POST `/api/click`. **The `API_URL` constant is hardcoded** to the Vercel backend URL (`nutricionista-esportivo-5u2i.vercel.app/api`); update it when moving environments.
 - `carrousel.js`, `faqButton.js`, `scroll-animation.js`, `lucidIcons.js` — UI behavior.
+- Footer contains a short LGPD transparency note about the click-tracking data collection (see backend LGPD posture above) — keep it in sync if the tracked fields change.
 
 ## Environment variables (backend/.env)
 
