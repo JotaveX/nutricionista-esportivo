@@ -25,17 +25,18 @@ export class GeoLocationService {
     }
 
     try {
-      // Usando a ip-api (gratuita para testes/uso moderado)
-      const response = await axios.get(`http://ip-api.com/json/${ip}`);
+      // ipwho.is: gratuita, sem chave, e suporta HTTPS (ip-api.com só aceita
+      // HTTPS no plano pago, então o IP do visitante trafegaria sem cifrar)
+      const response = await axios.get(`https://ipwho.is/${ip}`);
       const data = response.data;
 
-      if (data.status === 'fail') return null;
+      if (!data.success) return null;
 
       return {
         country: data.country,
         city: data.city,
-        latitude: data.lat,
-        longitude: data.lon,
+        latitude: data.latitude,
+        longitude: data.longitude,
       };
     } catch (error) {
       console.error('Erro ao buscar geolocalização:', error);

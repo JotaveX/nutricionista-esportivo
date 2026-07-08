@@ -2,7 +2,7 @@ import { Pool } from 'pg';
 import dotenv from "dotenv";
 
 dotenv.config()
-console.log(process.env.neon_DATABASE_URL)
+
 // Conexão com Postgres
 const pool = new Pool({
     connectionString: process.env.neon_DATABASE_URL,

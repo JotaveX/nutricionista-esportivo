@@ -6,6 +6,11 @@ import clicksRouter from './routes';
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Vercel coloca a função atrás de um único proxy reverso: confiar em 1 hop
+// faz o Express calcular req.ip a partir do x-forwarded-for corretamente,
+// em vez de usar o valor bruto do header (que o cliente pode forjar).
+app.set('trust proxy', 1);
+
 // Middlewares
 app.use(express.json());
 
@@ -28,8 +33,7 @@ app.use(cors({
             callback(new Error('CORS não permitido'));
         }
     },
-    methods: ['GET', 'POST'],
-    credentials: true
+    methods: ['GET', 'POST']
 }));
 
 // Rotas

@@ -7,15 +7,14 @@ async function registrarClick() {
         const response = await fetch(`${API_URL}/click`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'x-api-key': process.env.API_KEY // Substitua pela sua chave de API real
             }
         });
 
         const data = await response.json();
 
         if (data.success) {
-            console.log('Clique registrado:', data.click);
-            // Opcional: mostrar notificação
             console.log(`✅ Clique registrado de ${data.click.city}, ${data.click.country}`);
         } else {
             console.error('Erro ao registrar clique:', data.error);
@@ -29,8 +28,8 @@ async function registrarClick() {
 document.querySelectorAll('a[href^="https://wa.me"]').forEach(link => {
     link.addEventListener('click', async (e) => {
         e.preventDefault(); // Previne o comportamento padrão do link
-        await registrarClick(); // Registra o click
         window.open(link.href, '_blank'); // Abre o link em nova aba
+        await registrarClick(); // Registra o click
     });
 });
 

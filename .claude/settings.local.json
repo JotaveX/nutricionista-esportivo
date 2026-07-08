@@ -6,7 +6,18 @@
       "Bash(git push *)",
       "mcp__plugin_context-mode_context-mode__ctx_execute",
       "Bash(git revert *)",
-      "Bash(node -e 'const fs=require\\(\"fs\"\\); const b64=fs.readFileSync\\(\"frontend/assets/logo.jpeg\"\\).toString\\(\"base64\"\\); const svg=`<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 100 100\"><defs><filter id=\"w\" x=\"-10%\" y=\"-10%\" width=\"120%\" height=\"120%\"><feColorMatrix type=\"matrix\" values=\"0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0.4 0.4 0.4 0 0\"/></filter><clipPath id=\"r\"><rect width=\"100\" height=\"100\" rx=\"20\" ry=\"20\"/></clipPath></defs><g clip-path=\"url\\(#r\\)\"><rect width=\"100\" height=\"100\" fill=\"#059669\"/><g filter=\"url\\(#w\\)\"><image x=\"-82\" y=\"-159\" width=\"264.4\" height=\"470.3\" href=\"data:image/jpeg;base64,${b64}\" preserveAspectRatio=\"none\"/></g></g></svg>`; fs.writeFileSync\\(\"frontend/assets/favicon.svg\", svg\\); console.log\\(\"favicon.svg:\", svg.length, \"bytes\"\\);')"
+      "Bash(node -e 'const fs=require\\(\"fs\"\\); const b64=fs.readFileSync\\(\"frontend/assets/logo.jpeg\"\\).toString\\(\"base64\"\\); const svg=`<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 100 100\"><defs><filter id=\"w\" x=\"-10%\" y=\"-10%\" width=\"120%\" height=\"120%\"><feColorMatrix type=\"matrix\" values=\"0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0.4 0.4 0.4 0 0\"/></filter><clipPath id=\"r\"><rect width=\"100\" height=\"100\" rx=\"20\" ry=\"20\"/></clipPath></defs><g clip-path=\"url\\(#r\\)\"><rect width=\"100\" height=\"100\" fill=\"#059669\"/><g filter=\"url\\(#w\\)\"><image x=\"-82\" y=\"-159\" width=\"264.4\" height=\"470.3\" href=\"data:image/jpeg;base64,${b64}\" preserveAspectRatio=\"none\"/></g></g></svg>`; fs.writeFileSync\\(\"frontend/assets/favicon.svg\", svg\\); console.log\\(\"favicon.svg:\", svg.length, \"bytes\"\\);')",
+      "Bash(curl *)",
+      "Bash(npm install *)",
+      "Bash(npx tsc *)",
+      "Bash(ls -la .env)",
+      "Bash(grep -c \"^\" .env)",
+      "Bash(grep -o '^[A-Za-z_]*=' .env)",
+      "Bash(npx ts-node *)",
+      "Bash(echo \"PID: $!\")",
+      "Read(//tmp/**)",
+      "Bash(kill 1335)",
+      "Bash(pkill -f \"ts-node src/index.ts\")"
     ]
   }
 }

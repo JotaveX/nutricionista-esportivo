@@ -1,15 +1,25 @@
 import { Router } from 'express';
+import rateLimit from 'express-rate-limit';
 import pool from './database';
 import { GeoLocationService } from './geoLocation';
+import apiKeyMiddleware from './validApiKey';
 
 const router = Router();
 
+// Limita registros de clique por IP para conter spam no /click público
+const clickLimiter = rateLimit({
+    windowMs: 60 * 1000,
+    limit: 20,
+    standardHeaders: true,
+    legacyHeaders: false,
+});
+
 // Rota para incrementar o contador de cliques
-router.post('/click', async (req, res) => {
+router.post('/click', clickLimiter, async (req, res) => {
     try {
-        // Obter IP do cliente
-        const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-        const ipString = Array.isArray(ip) ? ip[0] : ip;
+        // req.ip já resolve o IP real do cliente a partir do x-forwarded-for,
+        // respeitando o "trust proxy" configurado em index.ts (1 hop = Vercel).
+        const ipString = req.ip;
 
         // Obter geolocalização
         const geoLocation = await GeoLocationService.getLocationByIp(ipString);
@@ -63,8 +73,8 @@ router.post('/click', async (req, res) => {
     }
 });
 
-// Rota para consultar todos os cliques
-router.get('/clicks', async (req, res) => {
+// Rota para consultar todos os cliques (dados sensíveis: IP + geolocalização)
+router.get('/clicks', apiKeyMiddleware, async (req, res) => {
     try {
         const result = await pool.query(`
             SELECT 
@@ -125,7 +135,7 @@ router.get('/clicks', async (req, res) => {
 });
 
 // Rota para estatísticas dos cliques
-router.get('/clicks/stats', async (req, res) => {
+router.get('/clicks/stats', apiKeyMiddleware, async (req, res) => {
     try {
         // Estatísticas gerais
         const statsResult = await pool.query(`
