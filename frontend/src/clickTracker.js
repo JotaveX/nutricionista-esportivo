@@ -7,8 +7,7 @@ async function registrarClick() {
         const response = await fetch(`${API_URL}/click`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
-                'x-api-key': process.env.API_KEY // Substitua pela sua chave de API real
+                'Content-Type': 'application/json'
             }
         });
 
