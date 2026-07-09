@@ -22,8 +22,12 @@ router.post('/click', clickLimiter, async (req, res) => {
         // respeitando o "trust proxy" configurado em index.ts (1 hop = Vercel).
         const ipString = req.ip;
 
-        // Obter geolocalização
-        const geoLocation = await GeoLocationService.getLocationByIp(ipString);
+        // Preferir os headers de geolocalização da própria Vercel (mais
+        // rápido e sem enviar o IP a um terceiro); só consulta o ipwho.is
+        // quando não estão presentes (ex: rodando localmente).
+        const geoLocation =
+            GeoLocationService.fromVercelHeaders(req.headers) ||
+            (await GeoLocationService.getLocationByIp(ipString));
 
         // Incrementar contador global
         await pool.query('UPDATE clicks SET count = count + 1 WHERE id = 1');

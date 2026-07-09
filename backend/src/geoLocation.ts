@@ -9,6 +9,26 @@ export interface IGeoLocation {
 }
 
 export class GeoLocationService {
+  // A Vercel injeta esses headers em toda requisição que passa pela edge
+  // network dela (geolocalização própria, sem chamada externa e sem enviar
+  // o IP do visitante a mais um terceiro). Só existem em produção na Vercel
+  // — em dev local (`npm run dev`) não estão presentes.
+  static fromVercelHeaders(headers: Record<string, string | string[] | undefined>): IGeoLocation | null {
+    const country = headers['x-vercel-ip-country'];
+    if (!country || Array.isArray(country)) return null;
+
+    const city = headers['x-vercel-ip-city'];
+    const latitude = headers['x-vercel-ip-latitude'];
+    const longitude = headers['x-vercel-ip-longitude'];
+
+    return {
+      country,
+      city: typeof city === 'string' ? decodeURIComponent(city) : 'Desconhecido',
+      latitude: typeof latitude === 'string' ? parseFloat(latitude) : NaN,
+      longitude: typeof longitude === 'string' ? parseFloat(longitude) : NaN,
+    };
+  }
+
   static async getLocationByIp(ip: string | undefined): Promise<IGeoLocation | null> {
     if (!ip) {
       return null;
