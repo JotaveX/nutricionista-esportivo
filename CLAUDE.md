@@ -30,7 +30,7 @@ There is no test suite and no linter configured.
 
 Entry point [backend/src/index.ts](backend/src/index.ts) wires Express, sets `trust proxy` to `1` (Vercel adds exactly one proxy hop, so this makes `req.ip` resolve the real client IP from `x-forwarded-for` instead of trusting a client-suppliable header verbatim), configures CORS (allow-list driven by `ALLOWED_ORIGIN` env var plus localhost variants), and mounts the click router at `/api`.
 
-[backend/src/database.ts](backend/src/database.ts) creates a singleton `pg.Pool` against `process.env.neon_DATABASE_URL` (note the lowercase `neon_` prefix — it is intentional and must match `.env`). SSL uses `rejectUnauthorized: false` because Neon's cert is not in Node's trust store on the host. On module load it runs `CREATE TABLE IF NOT EXISTS clicks (...)` — schema is owned by the app, not by migrations — and then a one-off `DELETE FROM clicks WHERE timestamp < NOW() - INTERVAL '180 days'` (data-retention purge, runs once per cold start; see LGPD note below).
+[backend/src/database.ts](backend/src/database.ts) creates a singleton `pg.Pool` against `process.env.neon_DATABASE_URL` (note the lowercase `neon_` prefix — it is intentional and must match `.env`). SSL uses `rejectUnauthorized: false` because Neon's cert is not in Node's trust store on the host. On module load it runs `CREATE TABLE IF NOT EXISTS clicks (...)` — schema is owned by the app, not by migrations —
 
 [backend/src/validApiKey.ts](backend/src/validApiKey.ts) is a middleware that checks the `x-api-key` header (timing-safe compare) against `process.env.API_KEY`. It's applied only to the two read endpoints below, **not** to `POST /api/click` — that route stays public because it's called by anonymous site visitors who can't hold a secret.
 
